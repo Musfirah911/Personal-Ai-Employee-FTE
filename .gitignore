@@ -1,0 +1,66 @@
+# ── Secrets — NEVER commit ────────────────────────────────────────────────────
+.env
+*.env
+!.env.example
+
+# ── OAuth / API credentials ───────────────────────────────────────────────────
+token.json
+credentials.json
+*.token
+*.pkl
+client_secret*.json
+service_account*.json
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.Python
+venv/
+.venv/
+env/
+
+# ── Browser / Chrome profile data (contains sessions, cookies, saved passwords)
+**/chrome_profile/
+**/Crashpad/
+**/BrowserMetrics*
+**/CrashpadMetrics*
+
+# ── Runtime state ─────────────────────────────────────────────────────────────
+AI_Employee_Vault/Logs/.gmail_processed_ids.txt
+AI_Employee_Vault/Logs/.scheduler_state.json
+Silver Tier/AI_Employee_Vault/Logs/.gmail_processed_ids.txt
+Silver Tier/AI_Employee_Vault/Logs/.scheduler_state.json
+
+# ── Log files (may contain email/message content) ────────────────────────────
+AI_Employee_Vault/Logs/*.jsonl
+Silver Tier/AI_Employee_Vault/Logs/*.jsonl
+Silver Tier/AI_Employee_Vault/Logs/*.png
+
+# ── Vault files with real personal/email data ────────────────────────────────
+Silver Tier/AI_Employee_Vault/Done/EMAIL_*.md
+Silver Tier/AI_Employee_Vault/Done/REPLY_*.md
+Silver Tier/AI_Employee_Vault/Pending_Approval/FLAG_*.md
+Silver Tier/echo
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editors ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo

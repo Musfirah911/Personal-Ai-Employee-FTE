@@ -1,11 +1,13 @@
-# Personal AI Employee — Bronze Tier
+# Personal AI Employee — Silver Tier
 
 > **Local-first, agent-driven, human-in-the-loop.**
 > An autonomous AI Employee powered by Claude Code and Obsidian.
 
 ---
 
-## What's Built Here (Bronze Tier)
+## What's Built Here
+
+### Bronze Tier ✅
 
 | Deliverable | Status |
 |---|---|
@@ -15,6 +17,20 @@
 | Filesystem Watcher script | ✅ |
 | Claude Code reading/writing vault | ✅ |
 | Agent Skills (`/process-inbox`, `/update-dashboard`, `/triage-task`) | ✅ |
+
+### Silver Tier ✅
+
+| Deliverable | Status |
+|---|---|
+| Gmail Watcher (polls every 2 min, creates action items) | ✅ |
+| LinkedIn Scheduler (reads queue, triggers posts) | ✅ |
+| Cron Scheduler (daily/weekly briefing triggers) | ✅ |
+| Upgraded Orchestrator (MCP execution, approval expiry) | ✅ |
+| New Agent Skills (`/create-plan`, `/post-linkedin`, `/send-email`, `/weekly-briefing`) | ✅ |
+| MCP config (`mcp.json`) for email + browser servers | ✅ |
+| `.env.example` for all secrets and schedule times | ✅ |
+| `Approved/` folder — orchestrator watches and executes | ✅ |
+| `Plans/LinkedIn_Queue.md` — scheduled post queue | ✅ |
 
 ---
 
@@ -51,15 +67,39 @@ python watchers/filesystem_watcher.py
 
 Drop any file into `AI_Employee_Vault/Inbox/` — the watcher will automatically create an action item in `/Needs_Action/`.
 
-### 6. Start the Orchestrator (optional, triggers Claude automatically)
+### 6. Start the Gmail Watcher (Silver)
+
+```bash
+python watchers/gmail_watcher.py
+```
+
+Polls Gmail every 2 minutes for important unread emails and creates action items in `/Needs_Action/`.
+
+### 7. Start the LinkedIn Scheduler (Silver)
+
+```bash
+python watchers/linkedin_watcher.py
+```
+
+Reads `Plans/LinkedIn_Queue.md` and creates action items for posts that are due.
+
+### 8. Start the Scheduler (Silver)
+
+```bash
+python watchers/scheduler.py
+```
+
+Fires daily/weekly briefing triggers at configured times from `.env`.
+
+### 9. Start the Orchestrator (triggers Claude + executes approved actions)
 
 ```bash
 python watchers/orchestrator.py --dry-run
 ```
 
-Remove `--dry-run` when you're ready for Claude to act.
+Remove `--dry-run` when ready. The Silver orchestrator also watches `/Approved/` and executes actions via MCP (email send, LinkedIn post).
 
-### 7. Use Claude Code Agent Skills
+### 10. Use Claude Code Agent Skills
 
 From your terminal, with Claude Code pointed at this project:
 
@@ -72,6 +112,24 @@ From your terminal, with Claude Code pointed at this project:
 
 # Deeply analyse a specific task
 /triage-task FILENAME.md
+
+# Create a multi-step plan
+/create-plan
+
+# Draft and queue a LinkedIn post
+/post-linkedin
+
+# Send an email (creates Pending_Approval first)
+/send-email
+
+# Generate a weekly CEO briefing
+/weekly-briefing
+```
+
+For Silver MCP features, run Claude with:
+
+```bash
+claude --mcp-config mcp.json
 ```
 
 ---
@@ -105,15 +163,19 @@ Located in `.claude/skills/`:
 | Process Inbox | `/process-inbox` | Triage all pending tasks |
 | Update Dashboard | `/update-dashboard` | Refresh Dashboard.md |
 | Triage Task | `/triage-task <file>` | Deep-analyse one task |
+| Create Plan | `/create-plan` | Build a multi-step plan |
+| Post LinkedIn | `/post-linkedin` | Draft and queue a LinkedIn post |
+| Send Email | `/send-email` | Draft email (requires approval) |
+| Weekly Briefing | `/weekly-briefing` | Generate CEO weekly summary |
 
 ---
 
 ## Architecture
 
 ```
-[You drop a file into /Inbox]
+[Inbox drop / Gmail / LinkedIn Queue / Scheduler]
         ↓
-[FilesystemWatcher detects it]
+[Watchers detect trigger]
         ↓
 [Creates .md in /Needs_Action]
         ↓
@@ -130,7 +192,8 @@ Located in `.claude/skills/`:
           ↓
   [You review & move to /Approved]
           ↓
-  [Orchestrator executes action]
+  [Orchestrator executes via MCP]     ← Silver: email MCP / LinkedIn API
+  (stale approvals → /Rejected after 48h)
           ↓
   [Log to /Logs/YYYY-MM-DD.jsonl]
 ```
@@ -151,14 +214,6 @@ Located in `.claude/skills/`:
 | Tier | Status | Key Additions |
 |---|---|---|
 | **Bronze** | ✅ Built | Vault, Watcher, Skills |
-| **Silver** | 🔜 | Gmail Watcher, LinkedIn posting, MCP email server |
+| **Silver** | ✅ Built | Gmail Watcher, LinkedIn posting, MCP email server, Cron scheduler |
 | **Gold** | 🔜 | Full cross-domain, Odoo, CEO Briefing, Ralph Wiggum loop |
 | **Platinum** | 🔜 | Cloud VM, always-on, Local+Cloud split |
-
----
-
-## Submission
-
-- **Tier:** Bronze
-- **Tech:** Python, watchdog, Claude Code, Obsidian
-- **Submit:** https://forms.gle/JR9T1SJq5rmQyGkGA
